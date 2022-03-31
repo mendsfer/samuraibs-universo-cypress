@@ -12,7 +12,7 @@
 // This function is called when a project is opened or re-opened (e.g. due to
 // the project's config changing)
 
-  const { Pool } = require('pg')
+const { Pool } = require('pg')
 
 /**
  * @type {Cypress.PluginConfig}
@@ -28,14 +28,33 @@ module.exports = (on, config) => {
 
   on('task', {
     removeUser(email) {
-      return new Promise(function(resolve){
-        pool.query('DELETE FROM public.users WHERE email = $1', [email], function(error, result){
+      return new Promise(function (resolve) {
+        pool.query('DELETE FROM public.users WHERE email = $1', [email], function (error, result) {
           if (error) {
             throw error
           }
-          resolve({success: result})
+          resolve({ success: result })
         })
       })
+    },
+
+    findToken(email) {
+      return new Promise(function (resolve) {
+        pool.query('select B.token from ' +
+          'public.users A ' +
+          ' INNER JOIN public.user_tokens B ' +
+          ' ON A.id = B.user_id ' +
+          ' WHERE A.email = $1 ' +
+          ' ORDER BY B.created_at', [email], function (error, result) {
+
+            if (error) {
+              throw error
+            }
+            resolve({ token: result.rows[0].token })
+          })
+
+      })
+
     }
   })
 }

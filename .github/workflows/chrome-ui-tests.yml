@@ -11,7 +11,7 @@ jobs:
   # This workflow contains a single job called "build"
   chrome-ui-tests:
     runs-on: ubuntu-latest
-    container: cypress/browsers:node12.18.3-chrome83-ff77
+    container: cypress/browsers:node14.17.6-chrome100-ff98
     strategy:
       fail-fast: false
       matrix:
@@ -24,14 +24,14 @@ jobs:
       - name: Ping API (Heroku)
         uses: Leocardoso94/is-my-site-up@v1.2
         with:
-          site: https://samuraibs-api-mendsfer.herokuapp.com
+          site: https://samuraibs-api-mends.herokuapp.com
         
       - name: 'UI Tests - Chrome'
         uses: cypress-io/github-action@v2
         with:
           # we have already installed all dependencies above
           install-command: yarn install
-          wait-on: 'https://samuraibs-web-mendsfer.herokuapp.com'
+          wait-on: 'https://samuraibs-web-mends.herokuapp.com'
           wait-on-timeout: 120
           browser: chrome
           record: true
